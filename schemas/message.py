@@ -1,9 +1,9 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from datetime import datetime
 
 
 class Message(BaseModel):
-    sender: str
-    receiver: str
+    sender_id: int
+    receiver_id: int
     content: str
     timestamp: datetime = datetime.now()

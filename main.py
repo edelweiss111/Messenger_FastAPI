@@ -1,12 +1,25 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
+
 from routers import users, messages
+from config import database, Base, engine
 
 app = FastAPI()
 
 app.include_router(users.router)
 app.include_router(messages.router)
+
+
+@app.on_event('startup')
+async def startup():
+    Base.metadata.create_all(bind=engine)
+    await database.connect()
+
+
+@app.on_event('shutdown')
+async def shutdown():
+    await database.disconnect()
 
 
 @app.exception_handler(ValidationError)
